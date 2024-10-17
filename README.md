@@ -63,7 +63,9 @@ passport.use(new OAuth2Strategy({
     clientSecret: EXAMPLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/example/callback"
   },
-  function(accessToken, refreshToken, profile, cb) {
+  function(accessToken, refreshToken, params, profile, cb) {
+    const token = jwt_decode(accessToken); // user id lives in here
+    const profileInfo = jwt_decode(params.id_token)); // user email lives in here
     User.findOrCreate({ exampleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
