@@ -61,11 +61,13 @@ passport.use(new OAuth2Strategy({
     tokenURL: 'https://www.example.com/oauth2/token',
     clientID: EXAMPLE_CLIENT_ID,
     clientSecret: EXAMPLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/example/callback"
+    callbackURL: "http://localhost:3000/auth/example/callback",
+    scope: "openid email profile offline_access",
   },
   function(accessToken, refreshToken, params, profile, cb) {
-    const token = jwt_decode(accessToken); // user id lives in here
-    const profileInfo = jwt_decode(params.id_token)); // user email lives in here
+    const token = jwt_decode(accessToken);
+    const email = jwt_decode(params.id_token).email;
+    const user = { ...token, email };
     User.findOrCreate({ exampleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
